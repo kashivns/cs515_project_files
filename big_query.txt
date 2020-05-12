@@ -1,0 +1,43 @@
+-- select Repo, PostId, FileId, SOUrl, GHUrl, Branch from `sotorrent-org.2019_06_21.PostReferenceGH` 
+-- where FileExt=".java" and
+-- Branch="master" and
+-- SOUrl like "https://stackoverflow.com/a%"
+-- limit 5000;
+
+-- select * from `sotorrent-org.2019_06_21.PostReferenceGH` limit 10;
+-- select * from `sotorrent-org.2019_06_21.GHMatches` limit 5000;
+
+select 
+`sotorrent-org.2019_06_21.PostReferenceGH`.RepoName, 
+`sotorrent-org.2019_06_21.PostReferenceGH`.PostId, 
+`sotorrent-org.2019_06_21.PostReferenceGH`.FileId, 
+`sotorrent-org.2019_06_21.PostReferenceGH`.SOUrl, 
+`sotorrent-org.2019_06_21.PostReferenceGH`.GHUrl,
+`sotorrent-org.2019_06_21.GHMatches`.MatchedLine,
+from `sotorrent-org.2019_06_21.PostReferenceGH` 
+inner join `sotorrent-org.2019_06_21.GHMatches` 
+on `sotorrent-org.2019_06_21.PostReferenceGH`.FileId = `sotorrent-org.2019_06_21.GHMatches`.FileId
+where 
+`sotorrent-org.2019_06_21.PostReferenceGH`.FileExt=".java" and
+`sotorrent-org.2019_06_21.PostReferenceGH`.Branch="master" and
+`sotorrent-org.2019_06_21.PostReferenceGH`.SOUrl like "https://stackoverflow.com/a%";
+
+
+select RepoName, PostId, FileId, SOUrl, GHUrl,`sotorrent-org.2019_09_23.Posts`.Body from
+(select
+`sotorrent-org.2019_09_23.PostReferenceGH`.RepoName as RepoName, 
+`sotorrent-org.2019_09_23.PostReferenceGH`.PostId as PostId, 
+`sotorrent-org.2019_09_23.PostReferenceGH`.FileId as FileId, 
+`sotorrent-org.2019_09_23.PostReferenceGH`.SOUrl as SOUrl, 
+`sotorrent-org.2019_09_23.PostReferenceGH`.GHUrl as GHUrl,
+-- `sotorrent-org.2019_09_23.Posts`.Body,
+`sotorrent-org.2019_09_23.Posts`.AcceptedAnswerId as AcceptedAnswerId,
+from `sotorrent-org.2019_09_23.PostReferenceGH` 
+inner join `sotorrent-org.2019_09_23.Posts` on `sotorrent-org.2019_09_23.PostReferenceGH`.PostId = `sotorrent-org.2019_09_23.Posts`.Id
+
+where 
+`sotorrent-org.2019_09_23.PostReferenceGH`.FileExt=".java" and
+`sotorrent-org.2019_09_23.PostReferenceGH`.Branch="master" and
+`sotorrent-org.2019_09_23.PostReferenceGH`.SOUrl like "https://stackoverflow.com/q%" and 
+`sotorrent-org.2019_09_23.Posts`.AcceptedAnswerId is not null) as answers
+inner join `sotorrent-org.2019_09_23.Posts` on answers.AcceptedAnswerId = `sotorrent-org.2019_09_23.Posts`.Id;
